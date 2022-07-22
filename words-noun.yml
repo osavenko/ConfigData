@@ -1,5 +1,3 @@
 config:
   word: Hi
-words: 
-  - table/стол
-  - chair/стул
+words: table/стол, chair/стул
