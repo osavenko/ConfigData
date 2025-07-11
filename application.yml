@@ -1,0 +1,45 @@
+app:
+  name: gateway-service
+  description: API Gateway for song`s microservices
+  version: 1.0.0
+
+server:
+  port: ${GATEWAY_SERVICE_PORT}
+spring:
+  application:
+    name: ${GATEWAY_SERVICE_NAME}
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          routes:
+            - id: ${SONG_SERVICE_NAME}
+              uri: lb://${SONG_SERVICE_NAME}
+              predicates:
+                - Path=/songs/**
+            - id: ${RESOURCE_SERVICE_NAME}
+              uri: lb://${RESOURCE_SERVICE_NAME}
+              predicates:
+                - Path=/resources/**
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${EUREKA_SERVER_NAME}:${EUREKA_SERVER_PORT}/eureka/
+    registerWithEureka: true
+    fetchRegistry: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
